@@ -9,6 +9,7 @@ import lib.wmod
 import lib.wformac
 import lib.wread
 import lib.wping
+import lib.wscan
 
 ip_addresses=[]
 subnet_masks=[]
@@ -39,18 +40,18 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
         lib.wmsg.print_commands(explicit_commands,implicit_commands,list_operators)
 
     while count < len(explicit_commands):
-        if re.search(r'help|h',str(explicit_commands)) and help_first_print == True:
+        if re.search(r'^help$',str(explicit_commands)) and help_first_print == True:
             list_first_print=False
-            if re.search(r'list|l',str(explicit_commands[count])):
+            if re.search(r'^list$',str(explicit_commands[count])):
                 lib.wmsg.print_h_list(True)
                 help_first_print=False
-            elif re.search(r'wake|w',str(explicit_commands[count])):
+            elif re.search(r'^wake$',str(explicit_commands[count])):
                 lib.wmsg.print_h_wake(True)
                 help_first_print=False
-            elif re.search(r'delete|d',str(explicit_commands[count])):
+            elif re.search(r'^delete$',str(explicit_commands[count])):
                 lib.wmsg.print_h_del(True)
                 help_first_print=False
-            elif re.search(r'add|a',str(explicit_commands[count])):
+            elif re.search(r'^add$',str(explicit_commands[count])):
                 lib.wmsg.print_h_add(True)
                 help_first_print=False
             elif help_first_print==True:
@@ -58,7 +59,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                 lib.wmsg.print_help()
             exit()
 
-        elif re.search(r'list',str(explicit_commands)) and list_first_print == True:
+        elif re.search(r'^list$',str(explicit_commands)) and list_first_print == True:
             list_first_print=False
             lib.wlist.print_data_t(debug_level,list_operators)
 
@@ -72,16 +73,17 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 #            list_first_print=False
 #            lib.wlist.print_data_t(debug_level,list_operators)
 #
-        if re.search(r'h|help',str(implicit_commands)) and help_first_print == True:
+        if re.search(r'h',str(implicit_commands)) and help_first_print == True:
             list_first_print=False
-            if re.search(r'list|l',str(implicit_commands[count])):
+            if re.search(r'l',str(implicit_commands[count])):
                 lib.wmsg.print_h_list(False)
-            elif re.search(r'wake|w',str(implicit_commands[count])):
+            elif re.search(r'w',str(implicit_commands[count])):
                 lib.wmsg.print_h_wake(False)
-            elif re.search(r'delete|d',str(implicit_commands[count])):
+                help_first_print=False
+            elif re.search(r'd',str(implicit_commands[count])):
                 lib.wmsg.print_h_del(False)
                 help_first_print=False
-            elif re.search(r'add|a',str(implicit_commands[count])):
+            elif re.search(r'a',str(implicit_commands[count])):
                 lib.wmsg.print_h_add(False)
                 help_first_print=False
             elif help_first_print==True:
@@ -121,6 +123,9 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                 else:
                     lib.wping.ping_all()
                 count+=1
+
+        elif re.search(r'scan',explicit_commands[count]):
+            lib.wscan.arp_scan()
 
 
         elif re.search(r'delete',explicit_commands[count]):
