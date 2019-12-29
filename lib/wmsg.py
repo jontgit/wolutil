@@ -12,25 +12,37 @@ MSG_banner="""
 """
 
 MSG_help="""
-
 Usage: wol [OPTION]... [VARIABLE]...
 Wake hosts in stored in the local CSV file
-Lists the host and status entries unless additional operators are supplied
+Lists the host and status entries unless additional 
+operators are supplied
 
 Explicit commands are passed by using the '--' delimiter.
 Implicit commands are passed by using the '-' delimiter.
 
 Use "wol [Command] -h" for examples
 
+Commands:
+
+    Explicit    |   Implicit
+                |
+    --list      |      -l
+    --add       |      -a
+    --delete    |      -d
+    --wake      |      -w
+    --status    |      -s
+    --scan      |      -p
 """
 MSG_list_desc="""
--l, --list      Lists the current database that has been configured
-                by the user. Additional operators can be passed with
-                the ':' delimiter to show certain information.
-"""
+-l, --list      
+    
+    Lists the current database that has
+    been configured by the user. Additional
+    operators can be passed withthe ':'
+    delimiter to show certain information."""
 MSG_list_examples="""
-
---list:[List Operators]
+    --list:[List Operators]
+    
     List Operators are: 
         :host   :h
         :mac    :m
@@ -50,19 +62,18 @@ MSG_list_examples="""
     Lists the IP address, followed by status and hostname
 """
 MSG_add_desc="""
+-a, --add       
 
--a, --add       Adds a new host to the host database. If no variables
-                are provided with the command, the user will be promp-
-                ted to confirm the details to append them to the host
-                list. Host variables must be seperated by a space. IP
-                address variables must contain a CIDR mask after the 
-                address. If not enough variables are passed to add a
-                full entry to the database, you will be prompted to
-                input the neccesary remaining fields.
-"""
+    Adds a new host to the host database. If no variables
+    are provided with the command, the user will be promp-
+    ted to confirm the details to append them to the host
+    list. Host variables must be seperated by a space. IP
+    address variables must contain a CIDR mask after the 
+    address. If not enough variables are passed to add a
+    full entry to the database, you will be prompted to
+    input the neccesary remaining fields."""
 MSG_add_examples="""
-
-            --add [Hostname | IP Address/CIDR Mask | MAC Address | CIDR Mask ]
+    --add [Hostname | IP Address | MAC Address | CIDR Mask ]
 
     Examples:
     Implicit:   -a Hostname1 192.168.0.25/24 FF:FF:FF:FF:FF:FF
@@ -74,35 +85,34 @@ MSG_add_examples="""
                 --add 10.1.41.254 FFFF:FFFF:FFFF
 """
 MSG_delete_desc="""
+-d, --delete    
 
--d, --delete    Removes the selected host from the database. Debice IDs
-                can be passed as variables, or if none are stated, you
-                will be prompted for a selection to delete.
-"""
+    Removes the selected host from the database. 
+    Device IDscan be passed as variables, or if 
+    none are stated, you will be prompted for a 
+    selection to delete."""
 MSG_delete_examples="""
-
---delete [Device ID]
+    --delete [Device ID]
 
     Examples:
     Implicit:   -d 3-4
 
-    Explicit:   --delete 3 4"""
-MSG_wake_desc="""
-
--w, --wake      Wakes the target computer specified by the user. this
-                works in a simliar way to the addition command, if no
-                variables are passed by the user, the host list will
-                print and they will be prompted to select a host by
-                either a host ID, IP address, Hostname or MAC address.
-
-                Multiple arguments can be passed to send multiple magic
-                packets in one command. Any combination of the below
-                variables may be referenced at once.
-
+    Explicit:   --delete 3 4
 """
-MSG_wake_examples="""
+MSG_wake_desc="""
+-w, --wake      
 
---wake [Device ID | Hostname | IP Address | MAC Address]
+    Wakes the target computer specified by the user. this
+    works in a simliar way to the addition command, if no
+    variables are passed by the user, the host list will
+    print and they will be prompted to select a host by
+    either a host ID, IP address, Hostname or MAC address.
+
+    Multiple arguments can be passed to send multiple magic
+    packets in one command. Any combination of the below
+    variables may be referenced at once."""
+MSG_wake_examples="""
+    --wake [Device ID | Hostname | IP Address | MAC Address]
 
     Examples:
     Implicit:   -w 1 2 4-7

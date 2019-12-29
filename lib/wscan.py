@@ -57,19 +57,19 @@ def network_id_lookup(passed_vars):
 
     if hosts == 1:
         div = hosts
-        print('Single host')
+        #print('Single host')
         possible_net_id = split_address
 
     elif hosts == 2:
         div = hosts
-        print('Point to Point connection')
+        #print('Point to Point connection')
         possible_net_id[3] = split_address[3]
         possible_net_id[2] = split_address[2]
         possible_net_id[1] = split_address[1]
         possible_net_id[0] = split_address[0]
 
     elif hosts <= 256:
-        print('Endpoints: '+str(hosts-2))
+        #print('Endpoints: '+str(hosts-2))
         if hosts == 256:
             div=int(hosts-1)
         elif hosts == 2:
@@ -89,7 +89,7 @@ def network_id_lookup(passed_vars):
 
     elif hosts > 256 and hosts < 65536:
         div=int(hosts/256)
-        print('Endpoints: '+str(hosts-2))
+        #print('Endpoints: '+str(hosts-2))
         while host_count <= 65536:
             int_metric = int(host_count/256)
             if int_metric > int(split_address[2]):
@@ -102,7 +102,7 @@ def network_id_lookup(passed_vars):
 
     elif hosts >= 65536 and hosts < 16777216:
         div=int(hosts/int(256*256))
-        print('Endpoints: '+str(hosts-2))
+        #print('Endpoints: '+str(hosts-2))
         while host_count <= 16777216:
             int_metric = int(host_count/int(256*256))
             if int_metric > int(split_address[1]):
@@ -114,7 +114,7 @@ def network_id_lookup(passed_vars):
 
     elif hosts >= 16777216:
         div=int(hosts/int(256*256*256))
-        print('Endpoints: '+str(hosts-2))
+        #print('Endpoints: '+str(hosts-2))
         while host_count <= 4294967296:
             int_metric = int(host_count/int(256*256*256))
             if int_metric > int(split_address[0]):
@@ -190,8 +190,11 @@ def arp_lookup():
                     ip_addresses.append(line[count])
                 count+=1
     count =0
-    while count < len(ip_addresses):
-        print(ip_addresses[count],
+    spaces = ''
+    
+    while count < len(ip_addresses[count]):
+    
+        print(ip_addresses[count]+spaces,
                 mac_addresses[count],
                 vendors[count])
         count+=1
@@ -204,27 +207,49 @@ def ping_sweep():
         net_ips.append(net_ip[0])
     dot = '.'
     count = 0
-    start_time = time.time()
     for entry in host_groups:
-        print('You are about to ping '+str(host_groups[count]-2)+' hosts.')
+        print('You are about to ping '+str(host_groups[count]-2)+' hosts.\n')
         if get_confirmation() == True:
             os.system('setterm -cursor off')
             current_ip = net_ips[count].split('.')
             print()
+            
+            start_time = time.time()
+
             if int(host_groups[count]) == 1:
-                print('   '+str(current_ip))
+                spaces=''
+                ip_len = len(dot.join(current_ip))
+                while ip_len <= 15:
+                    spaces+=' '
+                    ip_len+=1
+
+                print('   '+str(current_ip)+spaces+t_ip)
 
             elif int(host_groups[count]) == 2:
                 for t_ip in range(host_groups[count]):
                     current_ip[3] = str(int(current_ip[3])+t_ip)
-                    
-                    print('   '+str(dot.join(current_ip)+' - '+t_ip+1), end='\r')
+                    spaces=''
+                    ip_len = len(dot.join(current_ip))
+                    while ip_len <= 15:
+                        spaces+=' '
+                        ip_len+=1
+
+                   
+                    print('   '+str(dot.join(current_ip)+spaces+t_ip+1), end='\r')
                     
             elif int(host_groups[count]) < 256:
                 for t_ip in range(host_groups[count]-1):
                     current_ip[3] = str(int(current_ip[3])+1)
                     
-                    print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
+                    spaces=''
+                    ip_len = len(dot.join(current_ip))
+                    while ip_len <= 15:
+                        spaces+=' '
+                        ip_len+=1
+
+
+
+                    print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
                     
                     if current_ip[3] == '255':
                         current_ip[2] = str(int(current_ip[2])+1)
@@ -261,7 +286,14 @@ def ping_sweep():
             else:
                 for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
-                    
+
+                    spaces=''
+                    ip_len = len(dot.join(current_ip))
+                    while ip_len <= 15:
+                        spaces+=' '
+                        ip_len+=1
+
+
                     print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
 
                     if current_ip[3] == '255':
@@ -277,7 +309,7 @@ def ping_sweep():
                         current_ip[2] = '0'
                         current_ip[3] = '-1'
             print('\n\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
-            print("     --- %s seconds ---" % str(round((time.time()-start_time), 3))+'\n')
+            print("   --- %s seconds ---" % str(round((time.time()-start_time), 5))+'\n')
             os.system('setterm -cursor on')
 
 def get_valid_range():
@@ -309,7 +341,6 @@ def get_confirmation():
 
 def __main__(variables):
     count = 0
-    print()
 
     if len(variables) == 0:
         variables.append(get_valid_range())

@@ -41,26 +41,38 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
         lib.wmsg.print_commands(explicit_commands,implicit_commands,list_operators)
 
     while count < len(explicit_commands):
-        if re.search(r'^help$',str(explicit_commands)) and help_first_print == True:
+        if re.search(r'help',str(explicit_commands)) \
+                or re.search(r'h',str(implicit_commands)) \
+                and help_first_print == True:
+
+            if re.search(r'help',str(explicit_commands)):
+                help_level = True
+            elif re.search(r'h',str(implicit_commands)):
+                help_level = False
+
             list_first_print=False
-            if re.search(r'^list$',str(explicit_commands[count])):
-                lib.wmsg.print_h_list(True)
+            if re.search(r'list',str(explicit_commands)) \
+                or re.search(r'l',str(implicit_commands)):
+                lib.wmsg.print_h_list(help_level)
                 help_first_print=False
-            elif re.search(r'^wake$',str(explicit_commands[count])):
-                lib.wmsg.print_h_wake(True)
+            elif re.search(r'wake',str(explicit_commands)) \
+                or re.search(r'w',str(implicit_commands)):
+                lib.wmsg.print_h_wake(help_level)
                 help_first_print=False
-            elif re.search(r'^delete$',str(explicit_commands[count])):
-                lib.wmsg.print_h_del(True)
+            elif re.search(r'delete',str(explicit_commands)) \
+                or re.search(r'd',str(implicit_commands)):
+                lib.wmsg.print_h_del(help_level)
                 help_first_print=False
-            elif re.search(r'^add$',str(explicit_commands[count])):
-                lib.wmsg.print_h_add(True)
+            elif re.search(r'add',str(explicit_commands)) \
+                or re.search(r'a',str(implicit_commands)):
+                lib.wmsg.print_h_add(help_level)
                 help_first_print=False
             elif help_first_print==True:
                 help_first_print=False
                 lib.wmsg.print_help()
             exit()
 
-        elif re.search(r'^list$',str(explicit_commands)) and list_first_print == True:
+        elif re.search(r'list',str(explicit_commands)) and list_first_print == True:
             list_first_print=False
             lib.wlist.print_data_t(debug_level,list_operators)
 
@@ -70,28 +82,41 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
     count=0
     while count < len(implicit_commands):
-#        if re.search(r'l',str(implicit_commands)) and list_first_print == True:
-#            list_first_print=False
-#            lib.wlist.print_data_t(debug_level,list_operators)
-#
-        if re.search(r'h',str(implicit_commands)) and help_first_print == True:
+        if re.search(r'help',str(explicit_commands)) \
+                or re.search(r'h',str(implicit_commands)) \
+                and help_first_print == True:
+
+            if re.search(r'help',str(explicit_commands)):
+                help_level = True
+            elif re.search(r'h',str(implicit_commands)):
+                help_level = False
+
             list_first_print=False
-            if re.search(r'l',str(implicit_commands[count])):
-                lib.wmsg.print_h_list(False)
-            elif re.search(r'w',str(implicit_commands[count])):
-                lib.wmsg.print_h_wake(False)
+            if re.search(r'list',str(explicit_commands)) \
+                or re.search(r'l',str(implicit_commands)):
+                lib.wmsg.print_h_list(help_level)
                 help_first_print=False
-            elif re.search(r'd',str(implicit_commands[count])):
-                lib.wmsg.print_h_del(False)
+            elif re.search(r'wake',str(explicit_commands)) \
+                or re.search(r'w',str(implicit_commands)):
+                lib.wmsg.print_h_wake(help_level)
                 help_first_print=False
-            elif re.search(r'a',str(implicit_commands[count])):
-                lib.wmsg.print_h_add(False)
+            elif re.search(r'delete',str(explicit_commands)) \
+                or re.search(r'd',str(implicit_commands)):
+                lib.wmsg.print_h_del(help_level)
+                help_first_print=False
+            elif re.search(r'add',str(explicit_commands)) \
+                or re.search(r'a',str(implicit_commands)):
+                lib.wmsg.print_h_add(help_level)
                 help_first_print=False
             elif help_first_print==True:
                 help_first_print=False
                 lib.wmsg.print_help()
             exit()
-        
+
+
+
+
+
         if re.search(r'l',str(implicit_commands)) and list_first_print == True:
             list_first_print=False
             lib.wlist.print_data_t(debug_level,list_operators)
@@ -146,6 +171,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                     hostname=lib.wread.look_for_host(selection,'ID')
                     ipaddress=lib.wread.look_for_ip(selection,'ID')
                     macaddress=lib.wread.look_for_mac(selection,'ID')
+                    print('\nDevice ID:  '+str(icount))
                     print('\nIP Address:  '+str(ipaddress))
                     print('MAC Address: '+str(macaddress))
                     print('Host Name:   '+str(hostname)+'\n')
@@ -172,6 +198,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                         hostname=lib.wread.look_for_host(int(dev),'ID')
                         ipaddress=lib.wread.look_for_ip(int(dev),'ID')
                         macaddress=lib.wread.look_for_mac(int(dev),'ID')
+                        print('\nDevice ID:  '+str(dev))
                         print('\nIP Address:  '+str(ipaddress))
                         print('MAC Address: '+str(macaddress))
                         print('Host Name:   '+str(hostname)+'\n')
@@ -202,7 +229,8 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                         hostname=lib.wread.look_for_host(start_count,'ID')
                         ipaddress=lib.wread.look_for_ip(start_count,'ID')
                         macaddress=lib.wread.look_for_mac(start_count,'ID')
-                        print('\nIP Address:  '+str(ipaddress))
+                        print('\nDevice ID:   '+str(icount))
+                        print('IP Address:  '+str(ipaddress))
                         print('MAC Address: '+str(macaddress))
                         print('Host Name:   '+str(hostname)+'\n')
 
@@ -318,7 +346,8 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                     hostname=lib.wread.look_for_host(selection,'ID')
                     ipaddress=lib.wread.look_for_ip(selection,'ID')
                     macaddress=lib.wread.look_for_mac(selection,'ID')
-                    print('\nIP Address: '+str(ipaddress))
+                    print('\nDevice ID:   '+str(icount))
+                    print('IP Address: '+str(ipaddress))
                     print('MAC Address: '+str(macaddress))
                     print('Host Name: '+str(hostname)+'\n')
 
@@ -343,7 +372,8 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                         hostname=lib.wread.look_for_host(int(dev),'ID')
                         ipaddress=lib.wread.look_for_ip(int(dev),'ID')
                         macaddress=lib.wread.look_for_mac(int(dev),'ID')
-                        print('\nIP Address:  '+str(ipaddress))
+                        print('\nDevice ID:   '+str(icount))
+                        print('IP Address:  '+str(ipaddress))
                         print('MAC Address: '+str(macaddress))
                         print('Host Name:   '+str(hostname)+'\n')
 
@@ -374,7 +404,8 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                         hostname=lib.wread.look_for_host(start_count,'ID')
                         ipaddress=lib.wread.look_for_ip(start_count,'ID')
                         macaddress=lib.wread.look_for_mac(start_count,'ID')
-                        print('\nIP Address:  '+str(ipaddress))
+                        print('\nDevice ID:  '+str(icount))
+                        print('IP Address:  '+str(ipaddress))
                         print('MAC Address: '+str(macaddress))
                         print('Host Name:   '+str(hostname)+'\n')
 
@@ -624,7 +655,6 @@ def check_input(input_variables,debug_level):
                         lib.wmsg.found_implicit(letter)
 
         #LOOK FOR VARIABLES
-            count =1
         else:
             if input_variables[count] not in implicit_supplied_commands and input_variables[count] not in explicit_supplied_commands:
                 supplied_variables.append(input_variables[count])
