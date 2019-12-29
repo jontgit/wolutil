@@ -27,6 +27,29 @@ else:
 csv_file = str(str(directory)+slash+'hosts.csv')
 tmp_csv_file = str(str(directory)+slash+'hosts.tmp.csv')
 
+def ping(provided_ip):
+    spaces=''
+    spaces_needed = 15 - len(provided_ip)
+    for i in range(spaces_needed):
+        spaces+=' '
+
+    if platform.system().lower()=='windows':
+        output = subprocess.Popen(["ping.exe", ping_timeout,ping_timeout_count,ping_ammount,'1',provided_ip], stdout = subprocess.PIPE).communicate()[0]
+
+        if re.search(r'100% loss',str(output)):
+            print(spaces+provided_ip+' '+line_v+' '+Fore.RED+'Down'+Style.RESET_ALL)
+            count+=1
+        else:
+            print(spaces+provided_ip+' '+line_v+' '+Fore.GREEN+' Up '+Style.RESET_ALL)
+
+    else:
+        output = subprocess.Popen(["ping", ping_timeout,ping_timeout_count,ping_ammount,'1',provided_ip], stdout = subprocess.PIPE).communicate()[0]
+        
+        if re.search(r'0 received,',str(output)):
+            print(spaces+provided_ip+' '+line_v+' '+Fore.RED+'Down'+Style.RESET_ALL)
+        else:
+            print(spaces+provided_ip+' '+line_v+' '+Fore.GREEN+' Up '+Style.RESET_ALL)
+
 
 def ping_all():
 
@@ -54,9 +77,9 @@ def ping_all():
 
                     if re.search(r'100% loss',str(output)):
                         is_up = False
-                        print(row[0]+': Down')
                         row[3] = 'down'
                         vendor = mac.lookup(row[2])
+                        print(spaces+row[0]+' '+line_v+' '+Fore.RED+' Down '+Style.RESET_ALL+' '+line_v+' '+row[5])
                         if re.search(',',vendor):
                             vendor.replace(',','')
                         row[5] = vendor
@@ -64,9 +87,9 @@ def ping_all():
                         count+=1
                     else:
                         is_up = True
-                        print(row[0]+'-'+Fore.GREEN+'  Up'+Style.RESET_ALL)
                         row[3] = 'up'
                         vendor = mac.lookup(row[2])
+                        print(spaces+row[0]+' '+line_v+' '+Fore.GREEN+'  Up  '+Style.RESET_ALL+' '+line_v+' '+row[5])
                         if re.search(',',vendor):
                             vendor.replace(',','')
                         row[5] = vendor

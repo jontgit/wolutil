@@ -10,7 +10,7 @@ import lib.wformac
 import lib.wread
 import lib.wping
 import lib.wscan
-
+from lib.ASCII import *
 ip_addresses=[]
 subnet_masks=[]
 mac_addresses=[]
@@ -342,7 +342,11 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                 print('Found ping request.')
             elif debug_level == 0:
                 if len(ip_addresses) != 0:
-                    lib.wping.ping(ip_addresses[count])
+                    print('\n     IP Address '+line_v+' Status')
+                    print('    '+line_h*12+line_v_h+line_h*8)
+                    for i in range(len(ip_addresses)):
+                        lib.wping.ping(ip_addresses[i])
+                    print()
                 else:
                     lib.wping.ping_all()
                 count+=1
