@@ -1,4 +1,4 @@
-import os, csv, sys, platform, re
+import os, csv, sys, platform, re, time
 from pathlib import Path
 import lib.wvarcheck
 from lib.mac_vendor_lookup import MacLookup
@@ -202,30 +202,30 @@ def ping_sweep():
     for i in range(count):
         net_ip = network_ids[i].split('/')
         net_ips.append(net_ip[0])
-        
-
-    print(network_ids)
-    print(first_addresses)
-    print(last_addresses)
-    print(host_groups)
+    dot = '.'
     count = 0
+    start_time = time.time()
     for entry in host_groups:
         print('You are about to ping '+str(host_groups[count]-2)+' hosts.')
         if get_confirmation() == True:
+            os.system('setterm -cursor off')
             current_ip = net_ips[count].split('.')
-
+            print()
             if int(host_groups[count]) == 1:
-                print(str(current_ip))
+                print('   '+str(current_ip))
 
             elif int(host_groups[count]) == 2:
                 for t_ip in range(host_groups[count]):
                     current_ip[3] = str(int(current_ip[3])+t_ip)
-                    print(str(current_ip))
-            
+                    
+                    print('   '+str(dot.join(current_ip)+' - '+t_ip+1), end='\r')
+                    
             elif int(host_groups[count]) < 256:
                 for t_ip in range(host_groups[count]-1):
                     current_ip[3] = str(int(current_ip[3])+1)
-                    print(str(current_ip)+' - '+str(t_ip))
+                    
+                    print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
+                    
                     if current_ip[3] == '255':
                         current_ip[2] = str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
@@ -236,7 +236,15 @@ def ping_sweep():
             elif int(host_groups[count]) in [4, 256, 65536, 16777216]:
                 for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
-                    print(str(current_ip)+' - '+str(t_ip))
+                    
+                    spaces=''
+                    ip_len = len(dot.join(current_ip))
+                    while ip_len <= 15:
+                        spaces+=' '
+                        ip_len+=1
+
+                    print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
+                    
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
@@ -253,7 +261,9 @@ def ping_sweep():
             else:
                 for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
-                    print(str(current_ip)+' - '+str(t_ip))
+                    
+                    print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
+
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
@@ -266,7 +276,10 @@ def ping_sweep():
                         current_ip[1] = '0'
                         current_ip[2] = '0'
                         current_ip[3] = '-1'
- 
+            print('\n\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
+            print("     --- %s seconds ---" % str(round((time.time()-start_time), 3))+'\n')
+            os.system('setterm -cursor on')
+
 def get_valid_range():
     correct = False
     while correct == False:
@@ -296,6 +309,7 @@ def get_confirmation():
 
 def __main__(variables):
     count = 0
+    print()
 
     if len(variables) == 0:
         variables.append(get_valid_range())
