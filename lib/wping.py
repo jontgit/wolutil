@@ -1,4 +1,5 @@
 import lib.wdb
+from lib.ASCII import *
 import re, os, csv, sys, platform, subprocess
 from shutil import move
 from pathlib import Path
@@ -43,6 +44,8 @@ def ping_all():
     datareader = csv.reader(data_read)
     datawriter.writerow(['hostname','ip','mac','status','mask','vendor'])
     next(datareader)
+    print('\n       Hostname '+line_v+' Status '+line_v+' Vendor')
+    print('       '+line_h*9+line_v_h+line_h*8+line_v_h+line_h*8)
     for row in datareader:
         with open(os.devnull, 'w') as DEVNULL:
             try:
@@ -74,13 +77,13 @@ def ping_all():
 
                     output = subprocess.Popen(["ping", ping_timeout,ping_timeout_count,ping_ammount,'1',row[1]], stdout = subprocess.PIPE).communicate()[0]
                     spaces=''
-                    spaces_needed = 15 -len(row[0])
+                    spaces_needed = 15 - len(row[0])
                     for i in range(spaces_needed):
                         spaces+=' '
 
                     if re.search(r'0 received,',str(output)):
                         is_up = False
-                        print(row[0]+spaces+'-'+Fore.RED+' Down'+Style.RESET_ALL+' - '+row[5])
+                        print(spaces+row[0]+' '+line_v+' '+Fore.RED+' Down '+Style.RESET_ALL+' '+line_v+' '+row[5])
                         row[3] = 'down'
                         vendor = mac.lookup(row[2])
                         if re.search(',',vendor):
@@ -95,10 +98,9 @@ def ping_all():
                         if re.search(',',vendor):
                             vendor.replace(',','')
                         row[5] = vendor
-                        print(row[0]+spaces+'-'+Fore.GREEN+'  Up'+Style.RESET_ALL+'  - '+row[5])
+                        print(spaces+row[0]+' '+line_v+' '+Fore.GREEN+'  Up  '+Style.RESET_ALL+' '+line_v+' '+row[5])
                         datawriter.writerow(row)
                         count+=1
-
             except subprocess.CalledProcessError:
                 is_up = False
                 print(row[0]+': Down')
@@ -106,6 +108,7 @@ def ping_all():
                 datawriter.writerow(row)
                 count+=1
 
+    print()
     data_read.close()
     data_write.close()
     move(tmp_csv_file,csv_file)
