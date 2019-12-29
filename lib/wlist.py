@@ -58,6 +58,12 @@ def print_title(options):
             line_2.append('  STATUS  '+line_v)
             line_3.append(line_h*10+line_v_h)
             count+=1
+        elif re.match(r'vendor',options[count]):
+            line_1.append(line_h*16+line_h_d)
+            line_2.append('     VENDOR     '+line_v)
+            line_3.append(line_h*16+line_v_h)
+            count+=1
+ 
 
     if count == len(options):
         line_1[count] = line_1[count][:-1]
@@ -167,6 +173,20 @@ def display_data(options):
                         line[3] = str(Fore.RED+"   "+line[3]+Style.RESET_ALL+'   ')
 
                     print(str(line[3]+line_v),end="")
+                
+                elif re.match(r'vendor',options[icount]):
+                    while len(line[5]) < 15:
+                        line[5]+=' '
+
+                    while len(line[5]) > 14:
+                        line[5] = line[5][:-1]
+
+                    if current_line % 2 ==1:
+                        line[5] = str(' '+line[5])
+                    else:
+                        line[5] = str(' '+Style.DIM+line[5]+Style.RESET_ALL)
+                    print(str(line[5]+' '+line_v),end="")
+
 
                 else:
                     lib.wmsg.invalid_op(options[icount])
@@ -199,6 +219,10 @@ def print_last_line(options):
 
         elif re.search(r'status',str(options[count])):
             line_final.append(line_h*10+line_h_u)
+
+        elif re.search(r'vendor',str(options[count])):
+            line_final.append(line_h*16+line_h_u)
+
 
         if count == len(options)-1:
             line_final[count+1] = line_final[count+1][:-1]

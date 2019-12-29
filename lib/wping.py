@@ -1,10 +1,11 @@
-import platform    # For getting the operating system name
-import subprocess  # For executing a shell command
-from shutil import move
-import re, os, csv, sys, platform
-from pathlib import Path
 import lib.wdb
+import re, os, csv, sys, platform, subprocess
+from shutil import move
+from pathlib import Path
+from lib.colorama import *
+from lib.mac_vendor_lookup import MacLookup
 
+mac = MacLookup()
 
 if platform.system().lower()=='windows':
     os.chdir(os.getcwd())
@@ -40,7 +41,7 @@ def ping_all():
     datawriter = csv.writer(data_write)
     data_read = open(csv_file,'r')
     datareader = csv.reader(data_read)
-    datawriter.writerow(['hostname','ip','mac','status','mask'])
+    datawriter.writerow(['hostname','ip','mac','status','mask','vendor'])
     next(datareader)
     for row in datareader:
         with open(os.devnull, 'w') as DEVNULL:
@@ -52,29 +53,49 @@ def ping_all():
                         is_up = False
                         print(row[0]+': Down')
                         row[3] = 'down'
+                        vendor = mac.lookup(row[2])
+                        if re.search(',',vendor):
+                            vendor.replace(',','')
+                        row[5] = vendor
                         datawriter.writerow(row)
                         count+=1
                     else:
                         is_up = True
-                        print(row[0]+': Up')
+                        print(row[0]+'-'+Fore.GREEN+'  Up'+Style.RESET_ALL)
                         row[3] = 'up'
+                        vendor = mac.lookup(row[2])
+                        if re.search(',',vendor):
+                            vendor.replace(',','')
+                        row[5] = vendor
                         datawriter.writerow(row)
                         count+=1
 
                 else:
 
                     output = subprocess.Popen(["ping", ping_timeout,ping_timeout_count,ping_ammount,'1',row[1]], stdout = subprocess.PIPE).communicate()[0]
+                    spaces=''
+                    spaces_needed = 15 -len(row[0])
+                    for i in range(spaces_needed):
+                        spaces+=' '
 
                     if re.search(r'0 received,',str(output)):
                         is_up = False
-                        print(row[0]+': Down')
+                        print(row[0]+spaces+'-'+Fore.RED+' Down'+Style.RESET_ALL+' - '+row[5])
                         row[3] = 'down'
+                        vendor = mac.lookup(row[2])
+                        if re.search(',',vendor):
+                            vendor.replace(',','')
+                        row[5] = vendor
                         datawriter.writerow(row)
                         count+=1
                     else:
                         is_up = True
-                        print(row[0]+': Up')
                         row[3] = 'up'
+                        vendor = mac.lookup(row[2])
+                        if re.search(',',vendor):
+                            vendor.replace(',','')
+                        row[5] = vendor
+                        print(row[0]+spaces+'-'+Fore.GREEN+'  Up'+Style.RESET_ALL+'  - '+row[5])
                         datawriter.writerow(row)
                         count+=1
 

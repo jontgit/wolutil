@@ -156,9 +156,9 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                 lib.wmod.addition(ip_addresses,mac_addresses,subnet_masks,host_names)
             count+=1
         
-        elif re.search(r'status',explicit_commands[count]):
+        elif re.search(r'ping',explicit_commands[count]):
             if debug_level > 0:
-                print('Found status request.')
+                print('Found ping request.')
             elif debug_level == 0:
                 if len(ip_addresses) != 0:
                     lib.wping.ping(ip_addresses[count])
@@ -188,7 +188,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                     ipaddress=lib.wread.look_for_ip(selection,'ID')
                     macaddress=lib.wread.look_for_mac(selection,'ID')
                     print('\nDevice ID:  '+str(icount))
-                    print('\nIP Address:  '+str(ipaddress))
+                    print('IP Address:  '+str(ipaddress))
                     print('MAC Address: '+str(macaddress))
                     print('Host Name:   '+str(hostname)+'\n')
 
@@ -215,7 +215,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                         ipaddress=lib.wread.look_for_ip(int(dev),'ID')
                         macaddress=lib.wread.look_for_mac(int(dev),'ID')
                         print('\nDevice ID:  '+str(dev))
-                        print('\nIP Address:  '+str(ipaddress))
+                        print('IP Address:  '+str(ipaddress))
                         print('MAC Address: '+str(macaddress))
                         print('Host Name:   '+str(hostname)+'\n')
 
@@ -334,8 +334,12 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
             count+=1
 
         elif re.search(r's',implicit_commands[count]):
+            lib.wscan.__main__(addresses_and_masks)
+
+
+        elif re.search(r'p',implicit_commands[count]):
             if debug_level > 0:
-                print('Found status request.')
+                print('Found ping request.')
             elif debug_level == 0:
                 if len(ip_addresses) != 0:
                     lib.wping.ping(ip_addresses[count])
@@ -651,10 +655,16 @@ def check_input(input_variables,debug_level):
                         if debug_level > 1:
                             lib.wmsg.found_list_op(list_ops[count])
 
+                    elif re.match('v',list_ops[count]):
+                        list_operators.append('vendor')
+                        if debug_level > 1:
+                            lib.wmsg.found_list_op(list_ops[count])
+
                     elif re.match('s',list_ops[count]):
                         list_operators.append('status')
                         if debug_level > 1:
                             lib.wmsg.found_list_op(list_ops[count])
+                    
                     else:
                         wcount=1
                         while wcount > len(input_variables):

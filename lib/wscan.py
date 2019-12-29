@@ -192,7 +192,7 @@ def arp_lookup():
     count =0
     spaces = ''
     
-    while count < len(ip_addresses[count]):
+    while count <= len(ip_addresses[count]):
     
         print(ip_addresses[count]+spaces,
                 mac_addresses[count],
