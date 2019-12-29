@@ -46,12 +46,18 @@ def ping_all():
         with open(os.devnull, 'w') as DEVNULL:
             try:
                 if platform.system().lower()=='windows':
-                    os.system('ping '+ping_timeout+' '+
-                            ping_timeout_count+' '+
-                            ping_ammount+' 1 '+
-                            row[1]+' > NUL')
+                    output = subprocess.Popen(["ping.exe", ping_timeout,ping_timeout_count,ping_ammount,'1',row[1],'> NUL'])
+
+
+
+
+#                    os.system('ping '+ping_timeout+' '+
+#                            ping_timeout_count+' '+
+#                            ping_ammount+' 1 '+
+#                            row[1]+' > NUL')
 
                 else:
+                    
                     subprocess.check_call(['ping',
                         ping_timeout,
                         ping_timeout_count,

@@ -18,6 +18,7 @@ host_names=[]
 device_ids=[]
 device_ranges=[]
 list_operators=[]
+addresses_and_masks=[]
 
 '''
 ==============
@@ -125,7 +126,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                 count+=1
 
         elif re.search(r'scan',explicit_commands[count]):
-            lib.wscan.arp_scan()
+            lib.wscan.__main__(addresses_and_masks)
 
 
         elif re.search(r'delete',explicit_commands[count]):
@@ -476,6 +477,7 @@ def check_variables(variables,debug_level):
 
         elif vartype == 'IPMSK':
             sub_vars=variables[count].split('/')
+            addresses_and_masks.append(variables[count])
             ip_addresses.append(sub_vars[0])
             subnet_masks.append(sub_vars[1])
             if debug_level > 0:
