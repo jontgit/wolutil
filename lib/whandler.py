@@ -67,6 +67,14 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                 or re.search(r'a',str(implicit_commands)):
                 lib.wmsg.print_h_add(help_level)
                 help_first_print=False
+            elif re.search(r'status',str(explicit_commands)) \
+                or re.search(r's',str(implicit_commands)):
+                lib.wmsg.print_h_scan(help_level)
+                help_first_print=False
+            elif re.search(r'ping',str(explicit_commands)) \
+                or re.search(r'p',str(implicit_commands)):
+                lib.wmsg.print_h_ping(help_level)
+                help_first_print=False
             elif help_first_print==True:
                 help_first_print=False
                 lib.wmsg.print_help()
@@ -107,6 +115,14 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
             elif re.search(r'add',str(explicit_commands)) \
                 or re.search(r'a',str(implicit_commands)):
                 lib.wmsg.print_h_add(help_level)
+                help_first_print=False
+            elif re.search(r'status',str(explicit_commands)) \
+                or re.search(r's',str(implicit_commands)):
+                lib.wmsg.print_h_scan(help_level)
+                help_first_print=False
+            elif re.search(r'ping',str(explicit_commands)) \
+                or re.search(r'p',str(implicit_commands)):
+                lib.wmsg.print_h_ping(help_level)
                 help_first_print=False
             elif help_first_print==True:
                 help_first_print=False

@@ -13,9 +13,10 @@ MSG_banner="""
 
 MSG_help="""
 Usage: wol [OPTION]... [VARIABLE]...
-Wake hosts in stored in the local CSV file
-Lists the host and status entries unless additional 
-operators are supplied
+
+    Wake hosts in stored in the local CSV file
+    Lists the host and status entries unless 
+    additional operators are supplied.
 
 Explicit commands are passed by using the '--' delimiter.
 Implicit commands are passed by using the '-' delimiter.
@@ -30,8 +31,8 @@ Commands:
     --add       |      -a
     --delete    |      -d
     --wake      |      -w
-    --status    |      -s
-    --scan      |      -p
+    --scan      |      -s
+    --ping      |      -p
 """
 MSG_list_desc="""
 -l, --list      
@@ -43,23 +44,23 @@ MSG_list_desc="""
 MSG_list_examples="""
     --list:[List Operators]
     
-    List Operators are: 
-        :host   :h
-        :mac    :m
-        :ip     :i
-        :mask   :b
-        :status :s
+List Operators: 
+    
+    Explicit    |   Implicit
+                |
+    :host       |      :h
+    :mac        |      :m
+    :ip         |      :i
+    :mask       |      :b
+    :status     |      :s
 
-    Examples:
-    Implicit:   -l:h:m
-    Explicit:   --list:host:mac
+    Implicit:   
+                -l:h:m
+                -l:i:s:h
 
-    Will list the hostname, followed by the MAC address
-
-    Implicit:   -l:i:s:h
-    Explicit:   --list:ip:status:host
-
-    Lists the IP address, followed by status and hostname
+    Explicit:   
+                --list:host:mac
+                --list:ip:status:host
 """
 MSG_add_desc="""
 -a, --add       
@@ -75,7 +76,6 @@ MSG_add_desc="""
 MSG_add_examples="""
     --add [Hostname | IP Address | MAC Address | CIDR Mask ]
 
-    Examples:
     Implicit:   -a Hostname1 192.168.0.25/24 FF:FF:FF:FF:FF:FF
                 -a 10.0.0.1/24 10.0.0.2/24
                 -a 10.0.0.0 host-name3 /22
@@ -85,7 +85,7 @@ MSG_add_examples="""
                 --add 10.1.41.254 FFFF:FFFF:FFFF
 """
 MSG_delete_desc="""
--d, --delete    
+-d, --delete
 
     Removes the selected host from the database. 
     Device IDscan be passed as variables, or if 
@@ -94,13 +94,16 @@ MSG_delete_desc="""
 MSG_delete_examples="""
     --delete [Device ID]
 
-    Examples:
-    Implicit:   -d 3-4
+    Implicit:   
+                -d 3-4
+                -d 4 7 11-12
 
-    Explicit:   --delete 3 4
+    Explicit:   
+                --delete 3 4
+                --delete 1-2 6 7-8
 """
 MSG_wake_desc="""
--w, --wake      
+-w, --wake
 
     Wakes the target computer specified by the user. this
     works in a simliar way to the addition command, if no
@@ -114,7 +117,6 @@ MSG_wake_desc="""
 MSG_wake_examples="""
     --wake [Device ID | Hostname | IP Address | MAC Address]
 
-    Examples:
     Implicit:   -w 1 2 4-7
                 -w hostname1 hostname2 10.1.1.1
                 -w 2-3 hostname 8 ffff.aaaa.cccc
@@ -123,6 +125,62 @@ MSG_wake_examples="""
                 --wake 10.33.44.1 FF:FF:AA:AA:BB:BB
                 --wake hostname2 3 4-5
 """
+MSG_scan_desc="""
+-s, --scan
+
+    Scan through a range of IP addresses. If no rang is
+    inputted via the CLI, the user will be prompted to
+    choose a IP and Mask combination. this can be inputted
+    as one string, or individually.
+
+    A network ID or host address can be submitted, if this
+    is the case the appropriate network ranges will be
+    selected."""
+MSG_scan_examples="""
+    --scan [IP Address / CIDR Mask]
+
+    Implicit:
+                -s 192.168.0.0/24
+                -s 172.16.24.52/20
+
+    Explicit:
+                --scan 192.168.0.0/24
+                --scan 10.24.123.33/21
+"""
+
+def print_h_scan(desc):
+    if desc == True:
+        print(MSG_scan_desc)
+        print(MSG_scan_examples)
+    else:
+        print(MSG_scan_examples)
+
+MSG_ping_desc="""
+-p, --ping
+
+    Ping all hosts currently stored in the database.
+    This is used to ascertain the status of the host.
+
+    Individual hosts can be called if passed via the
+    cli."""
+
+MSG_ping_examples="""
+    --ping [None] | [IP Address | Device ID]
+
+    Implicit:
+                -p 1-3
+                -p 192.168.0.1
+    Explicit:
+                --ping 2-6
+                --ping 10.3.3.4
+"""
+
+def print_h_ping(desc):
+    if desc == True:
+        print(MSG_ping_desc)
+        print(MSG_ping_examples)
+    else:
+        print(MSG_ping_examples)
 
 def print_h_list(desc):
     if desc == True:
@@ -137,7 +195,6 @@ def print_h_del(desc):
         print(MSG_delete_examples)
     else:
         print(MSG_delete_examples)
-
 
 def print_h_add(desc):
     if desc == True:
