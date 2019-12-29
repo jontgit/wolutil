@@ -62,78 +62,31 @@ def ping_all():
                         count+=1
 
                 else:
-                    
-                    subprocess.check_call(['ping',
-                        ping_timeout,
-                        ping_timeout_count,
-                        ping_ammount, 
-                        '1',
-                        row[1]],stdout=DEVNULL,stderr=DEVNULL)
-                
-                    is_up = True
-                    print(row[0]+': Up')
-                    row[3] = 'up'
-                    datawriter.writerow(row)
-                    count+=1
+
+                    output = subprocess.Popen(["ping", ping_timeout,ping_timeout_count,ping_ammount,'1',row[1]], stdout = subprocess.PIPE).communicate()[0]
+
+                    if re.search(r'0 received,',str(output)):
+                        is_up = False
+                        print(row[0]+': Down')
+                        row[3] = 'down'
+                        datawriter.writerow(row)
+                        count+=1
+                    else:
+                        is_up = True
+                        print(row[0]+': Up')
+                        row[3] = 'up'
+                        datawriter.writerow(row)
+                        count+=1
+
             except subprocess.CalledProcessError:
                 is_up = False
                 print(row[0]+': Down')
                 row[3] = 'down'
                 datawriter.writerow(row)
                 count+=1
+
     data_read.close()
     data_write.close()
     move(tmp_csv_file,csv_file)
 
 
-            
-def ping(host):
-    """
-    Returns True if host (str) responds to a ping request.
-    Remember that a host may not respond to a ping (ICMP) request even if the host name is valid.
-    """
-
-    # Option for the number of packets as a function of
-    param = '-n' if platform.system().lower()=='windows' else '-c'
-
-    # Building the command. Ex: "ping -c 1 google.com"
-    command = ['ping', param, '1', host]
-   
-
-    with open(os.devnull, 'w') as DEVNULL:
-        try:
-            subprocess.check_call(
-                ['ping', param, '1', host],
-                stdout=DEVNULL,  # suppress output
-                stderr=DEVNULL
-            )
-            is_up = True
-            print(str(is_up))
-        except subprocess.CalledProcessError:
-            is_up = False
-            print(str(is_ip))
-
-'''
-    try:
-        response = subprocess.check_output(
-            ['ping', '-c', '3', '192.168.0.1'],
-            stderr=subprocess.STDOUT,  # get all output
-            universal_newlines=True  # return string not bytes
-        )
-    except subprocess.CalledProcessError:
-        response = None
-
-'''
-
-    #output = subprocess.check_output(command)# stdout=open(os.devnull, "w"), stderr=subprocess.STDOUT)
-
-    #output = subprocess.Popen(command,stdout=subprocess.PIPE)#, shell=True, preexec_fn=os.setsid)
-    
-    #output.poll()
-
-    #output = subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); print('finished')
-
-#    if re.search('0',str(output)):
-#        print('True')
-#    else:
-#        print('False')
