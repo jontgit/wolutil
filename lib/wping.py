@@ -46,15 +46,20 @@ def ping_all():
         with open(os.devnull, 'w') as DEVNULL:
             try:
                 if platform.system().lower()=='windows':
-                    output = subprocess.Popen(["ping.exe", ping_timeout,ping_timeout_count,ping_ammount,'1',row[1],'> NUL'])
+                    output = subprocess.Popen(["ping.exe", ping_timeout,ping_timeout_count,ping_ammount,'1',row[1]], stdout = subprocess.PIPE).communicate()[0]
 
-
-
-
-#                    os.system('ping '+ping_timeout+' '+
-#                            ping_timeout_count+' '+
-#                            ping_ammount+' 1 '+
-#                            row[1]+' > NUL')
+                    if re.search(r'100% loss',str(output)):
+                        is_up = False
+                        print(row[0]+': Down')
+                        row[3] = 'down'
+                        datawriter.writerow(row)
+                        count+=1
+                    else:
+                        is_up = True
+                        print(row[0]+': Up')
+                        row[3] = 'up'
+                        datawriter.writerow(row)
+                        count+=1
 
                 else:
                     
@@ -65,12 +70,11 @@ def ping_all():
                         '1',
                         row[1]],stdout=DEVNULL,stderr=DEVNULL)
                 
-
-                is_up = True
-                print(row[0]+': Up')
-                row[3] = 'up'
-                datawriter.writerow(row)
-                count+=1
+                    is_up = True
+                    print(row[0]+': Up')
+                    row[3] = 'up'
+                    datawriter.writerow(row)
+                    count+=1
             except subprocess.CalledProcessError:
                 is_up = False
                 print(row[0]+': Down')
