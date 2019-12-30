@@ -64,7 +64,8 @@ def addition(ip_addresses,mac_addresses,subnet_masks,host_names):
                 print()
                 break
 
-        print('\nIP Address:  '+ip_addresses[count])
+        print('\nDevice ID:   '+str(count+1)+' of '+str(len(ip_addresses)))
+        print('IP Address:  '+ip_addresses[count])
         print('Subnet Mask: '+subnet_masks[count])
         print('MAC Address: '+mac_addresses[count])
         print('Host Name:   '+host_names[count]+'\n')
@@ -78,11 +79,12 @@ def addition(ip_addresses,mac_addresses,subnet_masks,host_names):
 
         confirmation = input('Is the above correct?: ')
 
+        if count >= len(ip_addresses)-1:
+            exit()
         if confirmation in ["y","Y","yes","Yes","YES"]:
             lib.wdb.append(0,csv_line)
-            print('Added host to database.')
+            print('\nAdded host to database.')
             count+=1
         elif confirmation in ["n", "N", "no","No","NO"]:
-            print('Exiting.')
+            print('\nSkipping Entry.')
             count+=1
-

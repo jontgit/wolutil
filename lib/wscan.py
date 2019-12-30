@@ -24,7 +24,7 @@ else:
     directory = Path().absolute()
     slash = '/'
 
-tmp_arptable = str(str(directory)+slash+'arptable.tmp')
+tmp_arptable = str(str(directory)+slash+'tmp'+slash+'arptable.tmp')
 
 vendors=[]
 ip_addresses=[]
@@ -35,6 +35,7 @@ last_addresses=[]
 first_addresses=[]
 host_groups=[]
 net_ips=[]
+masks=[]
 
 def network_id_lookup(passed_vars):
 
@@ -147,6 +148,7 @@ def network_id_lookup(passed_vars):
     print('Network ID: '+network_id+'/'+str(mask))
     network_ids.append(network_id+'/'+str(mask))
 
+    masks.append(usr_input[1])
     first_address = network_id.split('.')
     if hosts >= 4:
         first_address[3] = str(int(first_address[3])+1)
@@ -183,7 +185,7 @@ def network_id_lookup(passed_vars):
 
 
 def arp_lookup():
-    os.system('sudo arp -a >> ./arptable.tmp')
+    os.system('sudo arp -a >> '+tmp_arptable)
     with open(tmp_arptable) as arp_data:
         arpreader = csv.reader(arp_data)
         for line in arpreader:
@@ -225,11 +227,18 @@ def arp_lookup():
         print(spaces+style+ip_addresses[count]+cend+' '+line_v,
                 style+mac_addresses[count]+cend+' '+line_v,
                 style+vendors[count]+cend)
+
+
         count+=1
     print()
     os.system('rm '+tmp_arptable)
 
+    for i in range(len(ip_addresses)):
+        masks.append(masks[0])
 
+    print('\nAdding hosts from ARP table\n')
+    for i in range(len(ip_addresses)):
+        lib.wmod.addition(ip_addresses,mac_addresses,masks,vendors)
 
 
 
