@@ -2,6 +2,15 @@ import os, csv, sys, platform, re, time
 from pathlib import Path
 import lib.wvarcheck
 from lib.mac_vendor_lookup import MacLookup
+import lib.wping
+from lib.colorama import *
+from lib.ASCII import *
+
+red=Fore.RED
+green=Fore.GREEN
+
+cdim=Style.DIM
+cend=Style.RESET_ALL
 
 mac = MacLookup()
 
@@ -169,6 +178,10 @@ def network_id_lookup(passed_vars):
     host_groups.append(hosts)
     print()
 
+
+
+
+
 def arp_lookup():
     os.system('sudo arp -a >> ./arptable.tmp')
     with open(tmp_arptable) as arp_data:
@@ -189,16 +202,36 @@ def arp_lookup():
                 if lib.wvarcheck.identify(line[count]) == 'IP':
                     ip_addresses.append(line[count])
                 count+=1
-    count =0
+    count = 0
     spaces = ''
-    
-    while count <= len(ip_addresses[count]):
-    
-        print(ip_addresses[count]+spaces,
-                mac_addresses[count],
-                vendors[count])
+    print('     IP Address '+line_v+'    MAC Address    '+line_v+' Vendor')
+    print('    '+line_h*12+line_v_h+line_h*19+line_v_h+line_h*8)
+    while count < len(ip_addresses):
+        needed_spaces = 15 - len(ip_addresses[count])
+        spaces=''
+        
+        if count % 2 == 1:
+          style = cdim
+        else:
+          style = ''
+
+        for i in range(needed_spaces):
+            spaces+=' '
+
+        #sortedlist = sorted(ip_addresses, key=operator.itemgetter(3), reverse=True)
+
+        
+
+        print(spaces+style+ip_addresses[count]+cend+' '+line_v,
+                style+mac_addresses[count]+cend+' '+line_v,
+                style+vendors[count]+cend)
         count+=1
+    print()
     os.system('rm '+tmp_arptable)
+
+
+
+
 
 def ping_sweep():
     count = len(network_ids)
@@ -224,6 +257,7 @@ def ping_sweep():
                     ip_len+=1
 
                 print('   '+str(current_ip)+spaces+t_ip)
+                
 
             elif int(host_groups[count]) == 2:
                 for t_ip in range(host_groups[count]):
@@ -235,7 +269,8 @@ def ping_sweep():
                         ip_len+=1
 
                    
-                    print('   '+str(dot.join(current_ip)+spaces+t_ip+1), end='\r')
+                    lib.wping.ping(dot.join(current_ip),True)
+                    #print('   '+str(dot.join(current_ip)+spaces+t_ip+1), end='\r')
                     
             elif int(host_groups[count]) < 256:
                 for t_ip in range(host_groups[count]-1):
@@ -249,7 +284,8 @@ def ping_sweep():
 
 
 
-                    print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
+                    lib.wping.ping(dot.join(current_ip),True)
+                    #print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
                     
                     if current_ip[3] == '255':
                         current_ip[2] = str(int(current_ip[2])+1)
@@ -259,6 +295,8 @@ def ping_sweep():
                         current_ip[2] = '-1'
  
             elif int(host_groups[count]) in [4, 256, 65536, 16777216]:
+                print('\n     IP Address '+line_v+' Status')
+                print('    '+line_h*12+line_v_h+line_h*8)
                 for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
                     
@@ -267,8 +305,8 @@ def ping_sweep():
                     while ip_len <= 15:
                         spaces+=' '
                         ip_len+=1
-
-                    print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
+                    lib.wping.ping(dot.join(current_ip),True)
+                    #print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
                     
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
@@ -294,7 +332,8 @@ def ping_sweep():
                         ip_len+=1
 
 
-                    print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
+                    lib.wping.ping(dot.join(current_ip),True)
+                    #print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
 
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)

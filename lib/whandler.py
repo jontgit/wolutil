@@ -345,7 +345,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
                     print('\n     IP Address '+line_v+' Status')
                     print('    '+line_h*12+line_v_h+line_h*8)
                     for i in range(len(ip_addresses)):
-                        lib.wping.ping(ip_addresses[i])
+                        lib.wping.ping(ip_addresses[i],False)
                     print()
                 else:
                     lib.wping.ping_all()
