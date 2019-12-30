@@ -4,7 +4,7 @@ import lib.wformac
 import re
 
 
-def addition(ip_addresses,mac_addresses,subnet_masks,host_names):
+def addition(ip_addresses,mac_addresses,subnet_masks,host_names,vendors):
     unique_inputs = max(len(ip_addresses),len(mac_addresses),len(subnet_masks),len(host_names))
     count = 0
     if unique_inputs==0:
@@ -76,6 +76,7 @@ def addition(ip_addresses,mac_addresses,subnet_masks,host_names):
         csv_line.append(mac_addresses[count])
         csv_line.append('down')
         csv_line.append('/'+str(subnet_masks[count]))
+        csv_line.append(vendors[count])
 
         confirmation = input('Is the above correct?: ')
 

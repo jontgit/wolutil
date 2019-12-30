@@ -330,7 +330,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
             if debug_level > 0:
                 lib.wmsg.imadd_found(implicit_commands[count],count)
             elif debug_level == 0:
-                lib.wmod.addition(ip_addresses,mac_addresses,subnet_masks,host_names)
+                lib.wmod.addition(ip_addresses,mac_addresses,subnet_masks,host_names,'N/a')
             count+=1
 
         elif re.search(r's',implicit_commands[count]):

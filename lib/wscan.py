@@ -36,6 +36,7 @@ first_addresses=[]
 host_groups=[]
 net_ips=[]
 masks=[]
+vendors=[]
 
 def network_id_lookup(passed_vars):
 
@@ -185,6 +186,7 @@ def network_id_lookup(passed_vars):
 
 
 def arp_lookup():
+    vendors=[]
     os.system('sudo arp -a >> '+tmp_arptable)
     with open(tmp_arptable) as arp_data:
         arpreader = csv.reader(arp_data)
@@ -236,11 +238,12 @@ def arp_lookup():
     for i in range(len(ip_addresses)):
         masks.append(masks[0])
 
+#     TO DO - Add checks to only add entries in the specified range
+
     print('\nAdding hosts from ARP table\n')
+
     for i in range(len(ip_addresses)):
-        lib.wmod.addition(ip_addresses,mac_addresses,masks,vendors)
-
-
+        lib.wmod.addition(ip_addresses,mac_addresses,masks,vendors,vendors)
 
 def ping_sweep():
     count = len(network_ids)
