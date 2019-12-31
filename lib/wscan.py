@@ -17,11 +17,13 @@ cend=Style.RESET_ALL
 
 
 if platform.system().lower()=='windows':
+    arp_command = 'arp -a >> '
     os.chdir(os.getcwd())
     directory = os.getcwd()
     slash = '\\'
 else:
     os.chdir(os.path.dirname(sys.argv[0]))
+    arp_command = 'sudo arp -a >> '
     directory = Path().absolute()
     slash = '/'
 
@@ -188,7 +190,7 @@ def network_id_lookup(passed_vars):
 
 def arp_lookup():
     vendors=[]
-    os.system('sudo arp -a >> '+tmp_arptable)
+    os.system(str(arp_command+tmp_arptable))
     with open(tmp_arptable) as arp_data:
         arpreader = csv.reader(arp_data)
         for line in arpreader:
