@@ -6,6 +6,10 @@ import lib.wping
 from lib.colorama import *
 from lib.ASCII import *
 
+init()
+
+ERASE_LINE = '\x1b[2k'
+
 red=Fore.RED
 green=Fore.GREEN
 
@@ -13,7 +17,6 @@ cdim=Style.DIM
 cend=Style.RESET_ALL
 
 mac = MacLookup()
-
 
 if platform.system().lower()=='windows':
     os.chdir(os.getcwd())
@@ -175,7 +178,7 @@ def network_id_lookup(passed_vars):
         last_address[1] = str(255)
         last_address[0] = str(int(last_address[0])+div-1)
     else:
-        print('Error, host_count out of range.')
+        print('\nError, host_count out of range.')
     last_addresses.append(dot.join(last_address))
     print('Last Address: '+dot.join(last_address))
     host_groups.append(hosts)
@@ -246,6 +249,8 @@ def arp_lookup():
         lib.wmod.addition(ip_addresses,mac_addresses,masks,vendors,vendors)
 
 def ping_sweep():
+    last = False
+    up_count = 0
     count = len(network_ids)
     for i in range(count):
         net_ip = network_ids[i].split('/')
@@ -279,10 +284,13 @@ def ping_sweep():
                     while ip_len <= 15:
                         spaces+=' '
                         ip_len+=1
-
-                   
-                    lib.wping.ping(dot.join(current_ip),True)
+             
+                    if t_ip == int(host_groups[count])-2:
+                        last = True
+                    
+                    lib.wping.ping(dot.join(current_ip),True,last)
                     #print('   '+str(dot.join(current_ip)+spaces+t_ip+1), end='\r')
+                       #sys.stdout.write(ERASE_LINE)
                     
             elif int(host_groups[count]) < 256:
                 for t_ip in range(host_groups[count]-1):
@@ -293,10 +301,15 @@ def ping_sweep():
                     while ip_len <= 15:
                         spaces+=' '
                         ip_len+=1
+                    #print('\n'+str(t_ip) + '  ' + str(int(host_groups[count])-2))
+                    if t_ip == int(host_groups[count])-2:
+                        last = True
 
-
-
-                    lib.wping.ping(dot.join(current_ip),True)
+                    status = lib.wping.ping(dot.join(current_ip),True,last)
+                    
+                    if status == 'UP':
+                        up_count+=1
+                    
                     #print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
                     
                     if current_ip[3] == '255':
@@ -317,8 +330,15 @@ def ping_sweep():
                     while ip_len <= 15:
                         spaces+=' '
                         ip_len+=1
-                    lib.wping.ping(dot.join(current_ip),True)
+                    
+                    if t_ip == int(host_groups[count])-3:
+                        last = True
+                        
+                    status = lib.wping.ping(dot.join(current_ip),True,last)
                     #print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
+                    
+                    if status == 'UP':
+                        up_count+=1
                     
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
@@ -343,10 +363,13 @@ def ping_sweep():
                         spaces+=' '
                         ip_len+=1
 
+                    if t_ip == int(host_groups[count])-2:
+                        last = True
 
-                    lib.wping.ping(dot.join(current_ip),True)
+                    status = lib.wping.ping(dot.join(current_ip),True, last)
                     #print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
-
+                    if status == 'UP':
+                        up_count+=1
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
@@ -359,7 +382,11 @@ def ping_sweep():
                         current_ip[1] = '0'
                         current_ip[2] = '0'
                         current_ip[3] = '-1'
-            print('\n\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
+            
+            if up_count == 0:
+                print('No hosts are up!')
+            
+            print('\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
             print("   --- %s seconds ---" % str(round((time.time()-start_time), 5))+'\n')
             os.system('setterm -cursor on')
 
