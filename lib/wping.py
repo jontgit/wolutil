@@ -32,18 +32,19 @@ oui_table = str(str(directory)+slash+'lib'+slash+'oui.txt')
 
 def mac_lookup(mac):
     mac = mac.replace(':','')
-    mac = mac[:6]
+    mac = mac.replace('-','')
+    mac = mac[:6].upper()
 
     with open(oui_table,'r') as ouireader:
     
         count = len(list(csv.reader(open(oui_table))))
         while True:
-            next_n_lines = list(islice(ouireader, 1000))
+            next_n_lines = list(islice(ouireader, 100))
             for line in next_n_lines:
                 
                 if re.search(str(mac),str(line)):
                     vendor = line.split(' ',1)
-                    vendor = vendor[1].replace('\n','')
+                    vendor = str(vendor[1].replace('\n',''))
                     return vendor
             
  

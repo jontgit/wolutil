@@ -202,8 +202,8 @@ def arp_lookup():
                 if re.search('<incomplete>',line[count]):
                     del ip_addresses[-1:]
                 if lib.wvarcheck.identify(line[count]) == 'MAC':
-                    mac_addresses.append(line[count])
-                    vendors.append(mac.lookup(line[count]))
+                    mac_addresses.append(line[count].upper())
+                    vendors.append(lib.wping.mac_lookup(line[count]))
                 if lib.wvarcheck.identify(line[count]) == 'IP':
                     ip_addresses.append(line[count])
                 count+=1
@@ -229,13 +229,12 @@ def arp_lookup():
 
         print(spaces+style+ip_addresses[count]+cend+' '+line_v,
                 style+mac_addresses[count]+cend+' '+line_v,
-                style+vendors[count]+cend)
+                style+str(vendors[count])+cend)
 
 
         count+=1
     print()
-    os.system('rm '+tmp_arptable)
-
+    os.remove(tmp_arptable)
     for i in range(len(ip_addresses)):
         masks.append(masks[0])
 

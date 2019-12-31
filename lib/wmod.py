@@ -68,7 +68,7 @@ def addition(ip_addresses,mac_addresses,subnet_masks,host_names,vendors):
         print('IP Address:  '+ip_addresses[count])
         print('Subnet Mask: '+subnet_masks[count])
         print('MAC Address: '+mac_addresses[count])
-        print('Host Name:   '+host_names[count]+'\n')
+        print('Host Name:   '+str(host_names[count])+'\n')
 
         csv_line=[]
         csv_line.append(host_names[count])
