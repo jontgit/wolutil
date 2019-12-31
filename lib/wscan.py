@@ -192,9 +192,9 @@ def arp_lookup():
     with open(tmp_arptable) as arp_data:
         arpreader = csv.reader(arp_data)
         for line in arpreader:
+            count = 0
             current_line=int(arpreader.line_num)
             line = str(line).split(' ')
-            count = 0
             while count < len(line):
                 if re.search('(|)',line[count]):
                     line[count] = line[count].replace('(','')
@@ -203,7 +203,8 @@ def arp_lookup():
                     del ip_addresses[-1:]
                 if lib.wvarcheck.identify(line[count]) == 'MAC':
                     mac_addresses.append(line[count].upper())
-                    vendors.append(lib.wping.mac_lookup(line[count]))
+                    vendor = lib.wping.mac_lookup(line[count])
+                    vendors.append(vendor)#lib.wping.mac_lookup(line[count]))
                 if lib.wvarcheck.identify(line[count]) == 'IP':
                     ip_addresses.append(line[count])
                 count+=1
