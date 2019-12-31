@@ -1,7 +1,6 @@
 import os, csv, sys, platform, re, time
 from pathlib import Path
 import lib.wvarcheck
-from lib.mac_vendor_lookup import MacLookup
 import lib.wping
 from lib.colorama import *
 from lib.ASCII import *
@@ -16,7 +15,6 @@ green=Fore.GREEN
 cdim=Style.DIM
 cend=Style.RESET_ALL
 
-mac = MacLookup()
 
 if platform.system().lower()=='windows':
     os.chdir(os.getcwd())
