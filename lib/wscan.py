@@ -186,30 +186,106 @@ def network_id_lookup(passed_vars):
 
 
 
+    
+def is_in_range(ip,count):
+
+    ip = ip.split('.')
+    f_ip = first_addresses[count].split('.')
+    l_ip = last_addresses[count].split('.')
+    
+    octet_okay = 0
+
+    
+    for i in range(len(ip)):
+    
+        ip[i] = int(ip[i])
+        l_ip[i] = int(l_ip[i])
+        f_ip[i] = int(f_ip[i])
+    
+        if  ip[i] > f_ip[i] and ip[i] < l_ip[i]:
+            octet_okay+=1
+            
+        if ip[i] == f_ip[i]:
+            octet_okay+=1 
+            
+    #print(octet_okay)
+    
+    if octet_okay == 4:
+        return True
+    else:
+        return False
+        
+    
 
 
-def arp_lookup():
+def arp_lookup(net_count):
+    count = 0
     vendors=[]
     os.system(str(arp_command+tmp_arptable))
     with open(tmp_arptable) as arp_data:
+        
         arpreader = csv.reader(arp_data)
+        
+        for i in range(3):
+            next(arpreader)
+        
         for line in arpreader:
-            count = 0
-            current_line=int(arpreader.line_num)
-            line = str(line).split(' ')
-            while count < len(line):
-                if re.search('(|)',line[count]):
-                    line[count] = line[count].replace('(','')
-                    line[count] = line[count].replace(')','')
-                if re.search('<incomplete>',line[count]):
-                    del ip_addresses[-1:]
-                if lib.wvarcheck.identify(line[count]) == 'MAC':
-                    mac_addresses.append(line[count].upper())
-                    vendor = lib.wping.mac_lookup(line[count])
-                    vendors.append(vendor)#lib.wping.mac_lookup(line[count]))
-                if lib.wvarcheck.identify(line[count]) == 'IP':
-                    ip_addresses.append(line[count])
-                count+=1
+            
+            if platform.system().lower()=='windows':
+            
+                current_line=int(arpreader.line_num)
+                line = str(line).split(' ') 
+                
+                #while count < len(line):
+                for count in range(len(line)):
+                    
+                    if count == 2:
+                        
+                        if is_in_range(line[count],net_count):
+                            
+                            ip_addresses.append(line[count])
+                    
+                    if re.search('-',line[count]):
+                    
+                        line[count] = line[count].replace('-',':')
+                        
+                       
+                        
+                        
+                        mac_addresses.append(line[count].upper())
+                        vendor = lib.wping.mac_lookup(line[count])
+                        vendors.append(vendor)    
+                        
+                    count+=1
+                        
+            else:
+            
+                current_line=int(arpreader.line_num)
+                line = str(line).split(' ')
+                print(line)
+                while count < len(line):
+                    if re.search('(|)',line[count]):
+                        line[count] = line[count].replace('(','')
+                        line[count] = line[count].replace(')','')
+                    if re.search('<incomplete>',line[count]):
+                        del ip_addresses[-1:]
+                    if lib.wvarcheck.identify(line[count]) == 'MAC':
+                    
+                  
+                        mac_addresses.append(line[count].upper())
+                        vendor = lib.wping.mac_lookup(line[count])
+                        vendors.append(vendor)#lib.wping.mac_lookup(line[count]))
+                        
+                        
+                        
+                    if lib.wvarcheck.identify(line[count]) == 'IP':
+                    
+                        if is_in_range(line[count]):
+                            ip_addresses.append(line[count],net_count)
+                        
+                    count+=1
+                    
+
     count = 0
     spaces = ''
     print('     IP Address '+line_v+'    MAC Address    '+line_v+' Vendor')
@@ -226,10 +302,8 @@ def arp_lookup():
         for i in range(needed_spaces):
             spaces+=' '
 
-        #sortedlist = sorted(ip_addresses, key=operator.itemgetter(3), reverse=True)
-
         
-
+        #print(count)
         print(spaces+style+ip_addresses[count]+cend+' '+line_v,
                 style+mac_addresses[count]+cend+' '+line_v,
                 style+str(vendors[count])+cend)
@@ -425,8 +499,8 @@ def __main__(variables):
 
     for var in variables:
         network_id_lookup(variables[count])
+        ping_sweep()
+        arp_lookup(count)
         count+=1
-    
-    ping_sweep()
-    arp_lookup()
+
     exit()
