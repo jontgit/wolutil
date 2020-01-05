@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import sys, os, platform, re
+import sys, os, platform, re, csv
 from pathlib import Path
 import configparser
 import lib.wlist
@@ -18,6 +18,14 @@ else:
     slash = '/'
 
 ops_file = str(str(directory)+slash+'config.ini')
+
+csv_file = str(str(directory)+slash+'hosts.csv')
+
+if not os.path.exists(csv_file):
+    with open(csv_file, 'w',  newline='') as hosts:
+        writer = csv.writer(hosts)
+        writer.writerow(["hostname","ip","mac","status","mask","vendor"])
+
 
 try:
 
