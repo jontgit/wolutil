@@ -17,22 +17,25 @@ cend=Style.RESET_ALL
 
 
 if platform.system().lower()=='windows':
-    arp_command = 'arp -a >> '
+    arp_clear=''
+    arp_command='arp -a >> '
     os.chdir(os.getcwd())
     directory = os.getcwd()
     slash = '\\'
+    windows=True
 else:
     os.chdir(os.path.dirname(sys.argv[0]))
-    arp_command = 'sudo arp -a >> '
+    arp_clear = 'sudo ip -s -s neigh flush all >> null'
+    arp_command = 'sudo arp -an | grep -E \'[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\' | sort -n -t . -k 1,1 -k 2,2 -k 3,3 -k 4,4 >> '
     directory = Path().absolute()
     slash = '/'
+    windows=False
 
 tmp_arptable = str(str(directory)+slash+'tmp'+slash+'arptable.tmp')
 
 vendors=[]
 ip_addresses=[]
 mac_addresses=[]
-
 network_ids=[]
 last_addresses=[]
 first_addresses=[]
@@ -40,6 +43,7 @@ host_groups=[]
 net_ips=[]
 masks=[]
 vendors=[]
+reachable_hosts=[]
 
 def network_id_lookup(passed_vars):
 
@@ -111,7 +115,7 @@ def network_id_lookup(passed_vars):
                 possible_net_id[1] = split_address[1]
                 possible_net_id[0] = split_address[0]
                 break
-            host_count+=hosts 
+            host_count+=hosts
 
 
     elif hosts >= 65536 and hosts < 16777216:
@@ -186,115 +190,118 @@ def network_id_lookup(passed_vars):
 
 
 
-    
+
 def is_in_range(ip,count):
 
     ip = ip.split('.')
     f_ip = first_addresses[count].split('.')
     l_ip = last_addresses[count].split('.')
-    
+
     octet_okay = 0
 
-    
+
     for i in range(len(ip)):
-    
+
         ip[i] = int(ip[i])
         l_ip[i] = int(l_ip[i])
         f_ip[i] = int(f_ip[i])
-    
+
         if  ip[i] > f_ip[i] and ip[i] < l_ip[i]:
             octet_okay+=1
-            
+
         if ip[i] == f_ip[i]:
-            octet_okay+=1 
-            
-    #print(octet_okay)
-    
+            octet_okay+=1
+
     if octet_okay == 4:
         return True
     else:
         return False
-        
-    
+
+
 
 
 def arp_lookup(net_count):
-    count = 0
+    count=0
+    arp_c=0
     vendors=[]
     os.system(str(arp_command+tmp_arptable))
     with open(tmp_arptable) as arp_data:
-        
-        arpreader = csv.reader(arp_data)
-        
-        for i in range(3):
-            next(arpreader)
-        
-        for line in arpreader:
-            
-            if platform.system().lower()=='windows':
-            
-                current_line=int(arpreader.line_num)
-                line = str(line).split(' ') 
-                
-                #while count < len(line):
-                for count in range(len(line)):
-                    
-                    if count == 2:
-                        
-                        if is_in_range(line[count],net_count):
-                            
-                            ip_addresses.append(line[count])
-                    
-                    if re.search('-',line[count]):
-                    
-                        line[count] = line[count].replace('-',':')
-                        
-                       
-                        
-                        
-                        mac_addresses.append(line[count].upper())
-                        vendor = lib.wping.mac_lookup(line[count])
-                        vendors.append(vendor)    
-                        
-                    count+=1
-                        
-            else:
-            
+
+
+
+
+        if platform.system().lower()=='windows':
+            arpreader = csv.reader(arp_data)
+
+            for i in range(3):
+                next(arpreader)
+
+            for line in arpreader:
+
                 current_line=int(arpreader.line_num)
                 line = str(line).split(' ')
-                print(line)
-                while count < len(line):
-                    if re.search('(|)',line[count]):
-                        line[count] = line[count].replace('(','')
-                        line[count] = line[count].replace(')','')
-                    if re.search('<incomplete>',line[count]):
-                        del ip_addresses[-1:]
-                    if lib.wvarcheck.identify(line[count]) == 'MAC':
-                    
-                  
-                        mac_addresses.append(line[count].upper())
-                        vendor = lib.wping.mac_lookup(line[count])
-                        vendors.append(vendor)#lib.wping.mac_lookup(line[count]))
-                        
-                        
-                        
-                    if lib.wvarcheck.identify(line[count]) == 'IP':
-                    
-                        if is_in_range(line[count]):
-                            ip_addresses.append(line[count],net_count)
-                        
-                    count+=1
-                    
 
+                if arp_c == len(reachable_hosts):
+                    break
+
+                if reachable_hosts[arp_c] == lib.wping.get_ip():
+                    local_mac = lib.wping.get_mac()
+                    local_mac = local_mac.upper()
+                    ip_addresses.append(reachable_hosts[arp_c])
+                    mac_addresses.append(local_mac)
+                    vendor = lib.wping.mac_lookup(local_mac)
+                    vendors.append(vendor)
+                    arp_c+=1
+
+                if line[2] == reachable_hosts[arp_c]:
+                    ip_addresses.append(line[2])
+                    for entry in line:
+                        if re.search('-',entry):
+
+                            entry = entry.replace('-',':')
+                            mac_addresses.append(entry.upper())
+                            vendor = lib.wping.mac_lookup(entry)
+                            vendors.append(vendor)
+
+                            arp_c+=1
+
+        else:
+            arpreader = arp_data.readlines()
+            for line in arpreader:
+                line = str(line).split(' ')
+                line[1] = line[1].replace('(','')
+                line[1] = line[1].replace(')','')
+                #if lib.wvarcheck.identify(line[1]) == 'IP' and line[3] != '<incomplete>':
+
+                if arp_c == len(reachable_hosts):
+                    break
+
+                print(reachable_hosts[arp_c],lib.wping.get_ip())
+                if reachable_hosts[arp_c] == lib.wping.get_ip():
+                    local_mac = lib.wping.get_mac()
+                    local_mac = local_mac.upper()
+                    ip_addresses.append(reachable_hosts[arp_c])
+                    mac_addresses.append(local_mac)
+                    vendor = lib.wping.mac_lookup(local_mac)
+                    vendors.append(vendor)
+                    arp_c+=1
+
+                elif line[1] == reachable_hosts[arp_c]:
+                    ip_addresses.append(line[1])
+                    if re.search(line[3],'<incomplete>'):
+                        line[3] = '   unreachable   '
+                    mac_addresses.append(line[3].upper())
+                    vendor = lib.wping.mac_lookup(line[3])
+                    vendors.append(vendor)
+                    arp_c+=1
     count = 0
     spaces = ''
     print('     IP Address '+line_v+'    MAC Address    '+line_v+' Vendor')
     print('    '+line_h*12+line_v_h+line_h*19+line_v_h+line_h*8)
-    
     while count < len(ip_addresses):
         needed_spaces = 15 - len(ip_addresses[count])
         spaces=''
-        
+
         if count % 2 == 1:
           style = cdim
         else:
@@ -303,7 +310,7 @@ def arp_lookup(net_count):
         for i in range(needed_spaces):
             spaces+=' '
 
-        
+
         #print(count)
         print(spaces+style+ip_addresses[count]+cend+' '+line_v,
                 style+mac_addresses[count]+cend+' '+line_v,
@@ -324,6 +331,7 @@ def arp_lookup(net_count):
         lib.wmod.addition(ip_addresses,mac_addresses,masks,vendors,vendors)
 
 def ping_sweep():
+    os.system(str(arp_clear))
     last = False
     up_count = 0
     count = len(network_ids)
@@ -335,7 +343,7 @@ def ping_sweep():
     for entry in host_groups:
         print('You are about to ping '+str(host_groups[count]-2)+' hosts.\n')
         if get_confirmation() == True:
-            os.system('setterm -cursor off')
+            if not windows: os.system('setterm -cursor off')
             current_ip = net_ips[count].split('.')
             print()
             
@@ -349,7 +357,7 @@ def ping_sweep():
                     ip_len+=1
 
                 print('   '+str(current_ip)+spaces+t_ip)
-                
+
 
             elif int(host_groups[count]) == 2:
                 for t_ip in range(host_groups[count]-1):
@@ -359,18 +367,18 @@ def ping_sweep():
                     while ip_len <= 15:
                         spaces+=' '
                         ip_len+=1
-             
+
                     if t_ip == int(host_groups[count])-2:
                         last = True
-                    
+
                     lib.wping.ping(dot.join(current_ip),True,last)
                     #print('   '+str(dot.join(current_ip)+spaces+t_ip+1), end='\r')
                        #sys.stdout.write(ERASE_LINE)
-                    
+
             elif int(host_groups[count]) < 256:
                 for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
-                    
+
                     spaces=''
                     ip_len = len(dot.join(current_ip))
                     while ip_len <= 15:
@@ -381,40 +389,42 @@ def ping_sweep():
                         last = True
 
                     status = lib.wping.ping(dot.join(current_ip),True,last)
-                    
+
                     if status == 'UP':
                         up_count+=1
-                    
+                        reachable_hosts.append(dot.join(current_ip))
+
+
                     #print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
-                    
+
                     if current_ip[3] == '255':
                         current_ip[2] = str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
                     if current_ip[2] == '255':
                         current_ip[1] = str(int(current_ip[1])+1)
                         current_ip[2] = '-1'
- 
+
             elif int(host_groups[count]) in [4, 256, 65536, 16777216]:
                 print('\n     IP Address '+line_v+' Status')
                 print('    '+line_h*12+line_v_h+line_h*8)
-                for t_ip in range(host_groups[count]-2):
+                for t_ip in range(host_groups[count]-1):
                     current_ip[3] = str(int(current_ip[3])+1)
-                    
+
                     spaces=''
                     ip_len = len(dot.join(current_ip))
                     while ip_len <= 15:
                         spaces+=' '
                         ip_len+=1
-                    
+
                     if t_ip == int(host_groups[count])-3:
                         last = True
-                        
+
                     status = lib.wping.ping(dot.join(current_ip),True,last)
                     #print('   '+str(dot.join(current_ip))+spaces+str(t_ip+1), end='\r')
-                    
+
                     if status == 'UP':
                         up_count+=1
-                    
+                        reachable_hosts.append(dot.join(current_ip))
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
@@ -427,7 +437,7 @@ def ping_sweep():
                         current_ip[1] = '0'
                         current_ip[2] = '0'
                         current_ip[3] = '-1'
- 
+
             else:
                 for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
@@ -445,6 +455,7 @@ def ping_sweep():
                     #print('   '+str(dot.join(current_ip))+' - '+str(t_ip+1), end='\r')
                     if status == 'UP':
                         up_count+=1
+                        reachable_hosts.append(dot.join(current_ip))
                     if current_ip[3] == '255':
                         current_ip[2] =  str(int(current_ip[2])+1)
                         current_ip[3] = '-1'
@@ -457,13 +468,16 @@ def ping_sweep():
                         current_ip[1] = '0'
                         current_ip[2] = '0'
                         current_ip[3] = '-1'
-            
+
             if up_count == 0:
-                print('No hosts are up!')
-            
+                print('No hosts are up - exititing.')
+                sys.exit()
+
             print('\n\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
             print("   --- %s seconds ---" % str(round((time.time()-start_time), 5))+'\n')
-            os.system('setterm -cursor on')
+
+
+            if not windows: os.system('setterm -cursor on')
 
 def get_valid_range():
     correct = False
@@ -475,7 +489,7 @@ def get_valid_range():
                 break
         except:
             print('Error, invalid range.')
-    
+
     return usr_in
 
 def get_confirmation():
@@ -494,11 +508,12 @@ def get_confirmation():
 
 def __main__(variables):
     count = 0
-
     if len(variables) == 0:
         variables.append(get_valid_range())
 
+
     for var in variables:
+
         network_id_lookup(variables[count])
         ping_sweep()
         arp_lookup(count)

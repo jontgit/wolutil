@@ -138,7 +138,7 @@
    
    --ping [None] | [IP Address | Device ID]
 
-#### Wake Examples:
+#### Ping Examples:
     
 
    Implicit:   `-p` 
