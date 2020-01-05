@@ -18,19 +18,20 @@
 import os
 import select
 import signal
-import six
+import lib.six as six
 import socket
 import struct
 import sys
-import time
+import timeit
 
 
 if sys.platform.startswith("win32"):
-	# On Windows, the best timer is time.clock()
-	default_timer = time.clock
+	# OLD - Windows, the best timer is time.clock()
+	default_timer = timeit.default_timer
 else:
-	# On most other platforms the best timer is time.time()
-	default_timer = time.time
+	# OLD - On most other platforms the best timer is time.time()
+    # As of Py3.3 timeit.default_timer replaced the above
+	default_timer = timeit.default_timer
 
 
 # ICMP parameters
