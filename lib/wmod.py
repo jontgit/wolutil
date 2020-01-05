@@ -1,7 +1,7 @@
 import lib.wdb
 import lib.wvarcheck
 import lib.wformac
-import re
+import re, sys
 
 
 def addition(ip_addresses,mac_addresses,subnet_masks,host_names,vendors):

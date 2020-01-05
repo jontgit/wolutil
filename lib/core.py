@@ -427,6 +427,6 @@ class Ping(object):
 			if timeout <= 0:
 				return None, 0, 0, 0, 0
 
-def ping(hostname, timeout=50, count=1, packet_size=55, *args, **kwargs):
+def ping(hostname, timeout=100, count=1, packet_size=55, *args, **kwargs):
 	p = Ping(hostname, timeout, packet_size, *args, **kwargs)
 	return p.run(count)

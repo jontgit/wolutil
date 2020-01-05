@@ -290,6 +290,7 @@ def arp_lookup(net_count):
     spaces = ''
     print('     IP Address '+line_v+'    MAC Address    '+line_v+' Vendor')
     print('    '+line_h*12+line_v_h+line_h*19+line_v_h+line_h*8)
+    
     while count < len(ip_addresses):
         needed_spaces = 15 - len(ip_addresses[count])
         spaces=''
@@ -351,7 +352,7 @@ def ping_sweep():
                 
 
             elif int(host_groups[count]) == 2:
-                for t_ip in range(host_groups[count]):
+                for t_ip in range(host_groups[count]-1):
                     current_ip[3] = str(int(current_ip[3])+t_ip)
                     spaces=''
                     ip_len = len(dot.join(current_ip))
@@ -367,7 +368,7 @@ def ping_sweep():
                        #sys.stdout.write(ERASE_LINE)
                     
             elif int(host_groups[count]) < 256:
-                for t_ip in range(host_groups[count]-1):
+                for t_ip in range(host_groups[count]-2):
                     current_ip[3] = str(int(current_ip[3])+1)
                     
                     spaces=''
@@ -460,7 +461,7 @@ def ping_sweep():
             if up_count == 0:
                 print('No hosts are up!')
             
-            print('\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
+            print('\n\nFinished! Queried '+str(host_groups[count]-2)+' Addresses.')
             print("   --- %s seconds ---" % str(round((time.time()-start_time), 5))+'\n')
             os.system('setterm -cursor on')
 
