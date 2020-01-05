@@ -195,7 +195,7 @@ def display_data(options):
             print()
             if count  == 1:
                 print('No entries!')
-                exit()
+                sys.exit()
         count+=1
 
 def print_last_line(options):

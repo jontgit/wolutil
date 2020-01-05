@@ -67,7 +67,7 @@ def network_id_lookup(passed_vars):
     if private_address == False:
         print('Error: Unable to send ICMP requests to external hosts.')
         print('\n  ### Please do not abuse this script. ###\n')
-        exit()
+        sys.exit()
 
     if hosts == 1:
         div = hosts
@@ -487,7 +487,7 @@ def get_confirmation():
         elif conf in ['n','N','no']:
             print('Ping request cancelled.')
             inp = True
-            exit()
+            sys.exit()
         else:
             print('Please enter yes or no.')
 
@@ -503,4 +503,4 @@ def __main__(variables):
         arp_lookup(count)
         count+=1
 
-    exit()
+    sys.exit()

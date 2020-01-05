@@ -1,3 +1,5 @@
+import sys
+
 MSG_banner="""
                  __      __   _
                  \ \    / /__| |
@@ -8,8 +10,7 @@ MSG_banner="""
                    Version 0.7
                 Created by:  JonT
 
-      use --help or -h for a list of commands.
-"""
+      use --help or -h for a list of commands."""
 
 MSG_help="""
 Usage: wol [OPTION]... [VARIABLE]...
@@ -21,7 +22,14 @@ Usage: wol [OPTION]... [VARIABLE]...
 Explicit commands are passed by using the '--' delimiter.
 Implicit commands are passed by using the '-' delimiter.
 
-Use "wol [Command] -h" for examples
+    --help   can be passed for a description of the
+             command along with examples.
+
+    -h       will only show examples of commands.
+             
+e.g:
+    wol --wake -h
+    wol -d --help
 
 Commands:
 
@@ -32,15 +40,13 @@ Commands:
     --delete    |      -d
     --wake      |      -w
     --scan      |      -s
-    --ping      |      -p
-"""
+    --ping      |      -p"""
 MSG_list_desc="""
 -l, --list      
     
-    Lists the current database that has
-    been configured by the user. Additional
-    operators can be passed withthe ':'
-    delimiter to show certain information."""
+    Lists the current database that has been configured by
+    the user. Additional operators can be passed with the 
+    ':' delimiter to only show requested information."""
 MSG_list_examples="""
     --list:[List Operators]
     
@@ -60,19 +66,18 @@ List Operators:
 
     Explicit:   
                 --list:host:mac
-                --list:ip:status:host
-"""
+                --list:ip:status:host"""
 MSG_add_desc="""
 -a, --add       
 
     Adds a new host to the host database. If no variables
     are provided with the command, the user will be promp-
     ted to confirm the details to append them to the host
-    list. Host variables must be seperated by a space. IP
+    list. Host variables must be separated by a space. IP
     address variables must contain a CIDR mask after the 
     address. If not enough variables are passed to add a
     full entry to the database, you will be prompted to
-    input the neccesary remaining fields."""
+    input the necessary remaining fields."""
 MSG_add_examples="""
     --add [Hostname | IP Address | MAC Address | CIDR Mask ]
 
@@ -82,8 +87,7 @@ MSG_add_examples="""
 
     Explicit:   --add Host2 10.3.4.2/23 AA.BB.CC.DD.EE.FF.AA
                 --add 10.0.0.1/24 10.0.0.2/24
-                --add 10.1.41.254 FFFF:FFFF:FFFF
-"""
+                --add 10.1.41.254 FFFF:FFFF:FFFF"""
 MSG_delete_desc="""
 -d, --delete
 
@@ -100,16 +104,18 @@ MSG_delete_examples="""
 
     Explicit:   
                 --delete 3 4
-                --delete 1-2 6 7-8
-"""
+                --delete 1-2 6 7-8"""
 MSG_wake_desc="""
 -w, --wake
 
     Wakes the target computer specified by the user. this
-    works in a simliar way to the addition command, if no
+    works in a similar way to the addition command, if no
     variables are passed by the user, the host list will
     print and they will be prompted to select a host by
     either a host ID, IP address, Hostname or MAC address.
+    
+    Currently there is no support for passing WoL passwords
+    via this function.
 
     Multiple arguments can be passed to send multiple magic
     packets in one command. Any combination of the below
@@ -123,8 +129,7 @@ MSG_wake_examples="""
 
     Explicit:   --wake 1,4,8-9
                 --wake 10.33.44.1 FF:FF:AA:AA:BB:BB
-                --wake hostname2 3 4-5
-"""
+                --wake hostname2 3 4-5"""
 MSG_scan_desc="""
 -s, --scan
 
@@ -145,8 +150,7 @@ MSG_scan_examples="""
 
     Explicit:
                 --scan 192.168.0.0/24
-                --scan 10.24.123.33/21
-"""
+                --scan 10.24.123.33/21"""
 
 def print_h_scan(desc):
     if desc == True:
@@ -160,6 +164,8 @@ MSG_ping_desc="""
 
     Ping all hosts currently stored in the database.
     This is used to ascertain the status of the host.
+    Currently this is the default behavior if no IP
+    is supplied by the user.
 
     Individual hosts can be called if passed via the
     cli."""
@@ -168,10 +174,10 @@ MSG_ping_examples="""
     --ping [None] | [IP Address | Device ID]
 
     Implicit:
-                -p 1-3
+                -p 
                 -p 192.168.0.1
     Explicit:
-                --ping 2-6
+                --ping 
                 --ping 10.3.3.4
 """
 
@@ -212,11 +218,11 @@ def print_h_wake(desc):
 
 def print_help():
     print(MSG_help)
-    exit()
+    sys.exit()
 
 def print_banner():
     print(MSG_banner)
-    exit()
+    sys.exit()
 
 MSG_ip_addr='IP Addresses: '
 MSG_mac_addr='MAC Addresses: '

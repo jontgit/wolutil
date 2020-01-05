@@ -1,4 +1,4 @@
-import re
+import re, sys
 import configparser
 import lib.wlist
 import lib.wmsg
@@ -78,7 +78,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
             elif help_first_print==True:
                 help_first_print=False
                 lib.wmsg.print_help()
-            exit()
+            sys.exit()
 
         elif re.search(r'list',str(explicit_commands)) and list_first_print == True:
             list_first_print=False
@@ -127,7 +127,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
             elif help_first_print==True:
                 help_first_print=False
                 lib.wmsg.print_help()
-            exit()
+            sys.exit()
 
 
 
@@ -182,7 +182,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                     if int(selection) > int(total):
                         print('Error: '+str(selection)+' Out of range.')
-                        exit()
+                        sys.exit()
 
                     hostname=lib.wread.look_for_host(selection,'ID')
                     ipaddress=lib.wread.look_for_ip(selection,'ID')
@@ -209,7 +209,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                         if int(dev) > int(total):
                             print('Error: '+str(dev)+' Out of range.')
-                            exit()
+                            sys.exit()
 
                         hostname=lib.wread.look_for_host(int(dev),'ID')
                         ipaddress=lib.wread.look_for_ip(int(dev),'ID')
@@ -237,10 +237,10 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                     if start_count > total:
                         print('Error: '+str(start_count)+' out of range.')
-                        exit()
+                        sys.exit()
                     if end_count > total:
                         print('Error: '+str(end_count)+' out of range.')
-                        exit()
+                        sys.exit()
                     while icount < end_count+1:
                         hostname=lib.wread.look_for_host(start_count,'ID')
                         ipaddress=lib.wread.look_for_ip(start_count,'ID')
@@ -276,10 +276,10 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                 if start_count > total:
                     print('Error: '+str(start_count)+' out of range.')
-                    exit()
+                    sys.exit()
                 if end_count > total:
                     print('Error: '+str(end_count)+' out of range.')
-                    exit()
+                    sys.exit()
                 while icount < end_count+1:
                     device_ids.append(icount)
                     icount+=1
@@ -364,7 +364,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                     if int(selection) > int(total):
                         print('Error: '+str(selection)+' Out of range.')
-                        exit()
+                        sys.exit()
 
 
                     hostname=lib.wread.look_for_host(selection,'ID')
@@ -391,7 +391,7 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                         if int(dev) > int(total):
                             print('error: '+str(dev)+' out of range.')
-                            exit()
+                            sys.exit()
 
                         hostname=lib.wread.look_for_host(int(dev),'ID')
                         ipaddress=lib.wread.look_for_ip(int(dev),'ID')
@@ -420,10 +420,10 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                     if start_count > total:
                         print('Error: '+str(start_count)+' out of range.')
-                        exit()
+                        sys.exit()
                     if end_count > total:
                         print('Error: '+str(end_count)+' out of range.')
-                        exit()
+                        sys.exit()
                     while icount < end_count+1:
                         hostname=lib.wread.look_for_host(start_count,'ID')
                         ipaddress=lib.wread.look_for_ip(start_count,'ID')
@@ -469,10 +469,10 @@ def check_commands(explicit_commands,implicit_commands,debug_level):
 
                 if start_count > total:
                     print('Error: '+str(start_count)+' out of range.')
-                    exit()
+                    sys.exit()
                 if end_count > total:
                     print('Error: '+str(end_count)+' out of range.')
-                    exit()
+                    sys.exit()
                 while icount < end_count+1:
                     device_ids.append(icount)
                     icount+=1

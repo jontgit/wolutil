@@ -57,12 +57,12 @@ def insert(debug_level,variables,line):
             for lines in datareader:
                 datawriter.writerow(lines)
     else:
-        exit()
+        sys.exit()
 
 def remove(debug_level,line):
 
     if line == 0:
-        exit()
+        sys.exit()
 
     with open(csv_file,'r') as data_read:
         datareader = csv.reader(data_read)

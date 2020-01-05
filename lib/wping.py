@@ -100,7 +100,7 @@ def ping_all():
 
     if data_len <= 1:
         print('Error: No host entries to check.')
-        exit()
+        sys.exit()
 
     count = 0
 
@@ -136,7 +136,7 @@ def ping_all():
                 row[3] = 'down'
                 
             else:
-                exit()
+                sys.exit()
 
                        
             datawriter.writerow(row)

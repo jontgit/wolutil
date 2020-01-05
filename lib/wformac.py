@@ -3,7 +3,7 @@ def format_mac(mac_address):
 
     #if re.search(':.',mac_address):
     #    print('Error: Found both . and : in inputted MAC address')
-    #    exit()
+    #    sys.exit()
 
     if re.search(':',mac_address):
         formatted_address=''

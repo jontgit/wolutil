@@ -1,5 +1,5 @@
 hostname,ip,mac,status,mask,vendor
-DHRPI-01,192.168.0.25,B8:27:EB:2C:09:A5,up,/24,Raspberry Pi Foundation
+DHRPI-01,192.168.0.25,B8:27:EB:2C:09:A5,down,/24,Raspberry Pi Foundation
 DHRPI-02,192.168.0.17,B8:27:EB:B2:10:DD,up,/24,Raspberry Pi Foundation
 DHESX-02-iDRA,192.168.0.120,00:24:E8:3D:09:E4,up,/24,Dell
 DHESX-01-iLO3,192.168.0.73,9C:8E:99:1D:99:38,up,/24,Hewlett Packard
@@ -7,4 +7,4 @@ DH-S1-FW-01,192.168.0.70,00:21:55:95:7E:5C,up,/24,Cisco Systems
 DH-R-01,192.168.0.1,18:35:D1:69:05:38,up,/24,Arris Group
 DHESX-01,192.168.0.90,9C:8E:99:26:08:2C,down,/24,Hewlett Packard
 DHESX-02,192.168.0.91,00:24:E8:3D:09:DC,down,/24,Dell
-DH-TS-01,192.168.0.26,14:DD:A9:DB:05:F9,up,/24,Asustek Computer
+DH-TS-01,192.168.0.26,14:DD:A9:DB:05:F9,down,/24,Asustek Computer

@@ -81,7 +81,7 @@ def addition(ip_addresses,mac_addresses,subnet_masks,host_names,vendors):
         confirmation = input('Is the above correct?: ')
 
         if count >= len(ip_addresses)-1:
-            exit()
+            sys.exit()
         if confirmation in ["y","Y","yes","Yes","YES"]:
             lib.wdb.append(0,csv_line)
             print('\nAdded host to database.')
