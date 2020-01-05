@@ -9,7 +9,6 @@ MSG_banner=f"""
                    \_/\_/\___/____|
 
                  WakeOnLan Utility
-                   Version 0.7
                Python Version: %s
                  Created by:  JonT
 
