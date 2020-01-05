@@ -1,12 +1,12 @@
 
 
 # wakeonlan
-           __      __   _
-           \ \    / /__| |
-            \ \/\/ / _ \ |__
-             \_/\_/\___/____|
+      	    					__      __   _
+      						\ \    / /__| |
+           					 	 \ \/\/ / _ \ |__
+        					 	  \_/\_/\___/____|
 
-		WakeOnLan Utility
+						         WakeOnLan Utility
 
 ### Usage: wol [OPTION]... [VARIABLE]...
 
