@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
-import sys, os, platform, configparser, re
+import sys, os, platform, re
 from pathlib import Path
+import configparser
 import lib.wlist
 import lib.wwake
 import lib.whandler
