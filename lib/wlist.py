@@ -117,6 +117,15 @@ def display_data(options):
 
                 if re.match(r'host',options[icount]) or re.match(r'h',options[icount]):
                     host_len = len(line[0])
+                    
+                                        
+                    while host_len > 15:
+                        line[0] = line[0][:-1]
+                        host_len-=1
+                        if host_len == 15:
+                            line[0] = line[0][:-1]
+                            line[0]+='-'
+                    
                     while host_len <= 17:
                         line[0] = str(line[0] + ' ')
                         host_len += 1
@@ -124,6 +133,7 @@ def display_data(options):
                             line[0] = str(' ' + line[0])
                             host_len += 1
 
+                    
                     if current_line % 2 == 1:
                             line[0] = str(line[0])
 

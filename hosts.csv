@@ -1,1 +1,8 @@
 hostname,ip,mac,status,mask,vendor
+Arris Group,192.168.0.1,18:35:D1:69:05:38,down,/27,Arris Group
+Espressif,192.168.0.11,A4:CF:12:A6:29:F7,down,/27,Espressif
+Espressif,192.168.0.12,A4:CF:12:A5:8E:0F,down,/27,Espressif
+Espressif,192.168.0.13,A4:CF:12:A5:DE:03,down,/27,Espressif
+Samsung Electro-mechanicsthailand,192.168.0.14,24:18:1D:6D:29:A1,down,/27,Samsung Electro-mechanicsthailand
+Amazon Technologies,192.168.0.17,0C:47:C9:89:3A:5B,down,/27,Amazon Technologies
+Apple,192.168.0.20,9C:64:8B:0B:E5:73,down,/27,Apple
