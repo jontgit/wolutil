@@ -346,7 +346,7 @@ def ping_sweep():
             if not windows: os.system('setterm -cursor off')
             current_ip = net_ips[count].split('.')
             print()
-            
+
             start_time = time.time()
 
             if int(host_groups[count]) == 1:
