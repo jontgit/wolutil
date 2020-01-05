@@ -28,6 +28,7 @@ try:
 
     if len(user_input)==1:
         lib.wmsg.print_banner()
+
     count=1
     while count < len(user_input):
 

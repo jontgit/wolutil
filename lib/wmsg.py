@@ -1,6 +1,8 @@
 import sys
 
-MSG_banner="""
+version = ".".join(map(str, sys.version_info[:3]))
+
+MSG_banner=f"""
                  __      __   _
                  \ \    / /__| |
                   \ \/\/ / _ \ |__
@@ -8,9 +10,10 @@ MSG_banner="""
 
                  WakeOnLan Utility
                    Version 0.7
-                Created by:  JonT
+               Python Version: %s
+                 Created by:  JonT
 
-      use --help or -h for a list of commands."""
+      use --help or -h for a list of commands.""" % version
 
 MSG_help="""
 Usage: wol [OPTION]... [VARIABLE]...
